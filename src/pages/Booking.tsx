@@ -316,17 +316,17 @@ export default function Booking() {
                     <div className="space-y-3">
                        <Label className="text-xs font-black uppercase tracking-widest text-slate-400">Pickup Date</Label>
                         <Popover>
-                          <PopoverTrigger asChild>
+                          <PopoverTrigger render={
                             <Button
                               variant={"outline"}
                               className={cn(
                                 "w-full rounded-2xl h-16 bg-slate-50 border-transparent focus:bg-white focus:border-indigo-600 transition-all font-bold text-lg px-6 justify-start",
                                 !date && "text-muted-foreground"
                               )}
-                            >
-                              <CalendarIcon className="mr-3 h-5 w-5 text-indigo-600" />
-                              {date ? format(date, "PPP") : <span>PICK A DATE</span>}
-                            </Button>
+                            />
+                          }>
+                            <CalendarIcon className="mr-3 h-5 w-5 text-indigo-600" />
+                            {date ? format(date, "PPP") : <span>PICK A DATE</span>}
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0 rounded-3xl border-slate-200" align="start">
                             <Calendar

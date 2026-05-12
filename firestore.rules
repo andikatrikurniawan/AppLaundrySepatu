@@ -8,6 +8,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Connection Test
+    match /test/connection {
+      allow read: if true;
+    }
+
     // Phase 3: Primitives
     function isSignedIn() {
       return request.auth != null;
