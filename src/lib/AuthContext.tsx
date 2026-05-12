@@ -33,27 +33,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      if (user) {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setProfile(docSnap.data() as UserProfile);
+      try {
+        setUser(user);
+        if (user) {
+          const docRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as UserProfile);
+          } else {
+            // Create initial profile
+            const newProfile: UserProfile = {
+              id: user.uid,
+              name: user.displayName || 'User',
+              email: user.email || '',
+              role: 'customer',
+            };
+            await setDoc(docRef, newProfile);
+            setProfile(newProfile);
+          }
         } else {
-          // Create initial profile
-          const newProfile: UserProfile = {
-            id: user.uid,
-            name: user.displayName || 'User',
-            email: user.email || '',
-            role: 'customer',
-          };
-          await setDoc(docRef, newProfile);
-          setProfile(newProfile);
+          setProfile(null);
         }
-      } else {
-        setProfile(null);
+      } catch (error) {
+        console.error("Error in AuthContext state change:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();

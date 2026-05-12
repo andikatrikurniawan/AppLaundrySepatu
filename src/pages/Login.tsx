@@ -18,9 +18,15 @@ export default function Login() {
       await signInWithPopup(auth, provider);
       toast.success('Selamat datang kembali!');
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error('Gagal masuk dengan Google');
+      if (error.code === 'auth/unauthorized-domain') {
+        toast.error('Domain tidak terotorisasi. Silakan tambahkan domain aplikasi ini ke Authorized Domains di Firebase Console.');
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.error('Popup diblokir oleh browser. Silakan izinkan popup untuk masuk.');
+      } else {
+        toast.error('Gagal masuk dengan Google: ' + (error.message || 'Error tidak dikenal'));
+      }
     } finally {
       setLoading(false);
     }
